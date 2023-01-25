@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { state } from "lit-element";
 import { v4 as uuid } from "uuid";
 
 interface PokemonBidI {
   price: number;
-  userId: number;
+  userId: string;
   pokemonId: string;
-  pokemonIndex: string;
+  pokemonIndex: number;
 }
 
 export interface PokemonI {
@@ -45,8 +46,22 @@ export const dataSlice = createSlice({
       });
       state.pokemon = nextPokemon;
     },
+    bidPokemon: (state: DataI, action: PayloadAction<PokemonBidI>) => {
+      console.log("==== Bid ===");
+      console.log(action.payload);
+      const { pokemonId, price } = action.payload;
+
+      state.pokemon.forEach((item) => {
+        if (item.pokemonId === pokemonId && item.currentHigh < price) {
+          item.bids.unshift(action.payload);
+          item.currentHigh = price;
+          state.topPokemonBids.push({ ...action.payload });
+          state.topPokemonBids.sort((a, b) => a.price - b.price);
+        }
+      });
+    },
   },
 });
 
-export const { fetchPokemon } = dataSlice.actions;
+export const { fetchPokemon, bidPokemon } = dataSlice.actions;
 export default dataSlice.reducer;

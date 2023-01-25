@@ -35,6 +35,7 @@
     "@reduxjs/toolkit": "^1.9.1",
     "axios": "^1.2.3",
     "lit-element": "^2.5.1",
+    "lit-modal": "^1.2.38",
     "pwa-helpers": "^0.9.1",
     "uuid": "^9.0.0"
   }
