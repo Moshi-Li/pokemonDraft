@@ -1,22 +1,22 @@
 import { LitElement, html, customElement, property, state } from "lit-element";
+import { connect } from "pwa-helpers/connect-mixin.js";
+import { fetchPokemon, PokemonI } from "../slices/data-slice";
+import Store, { RootStoreI } from "../store";
 
 @customElement("poke-auction-elem")
-export class PokeAuctionElem extends LitElement {
+export class PokeAuctionElem extends connect(Store)(LitElement) {
   @state()
-  private pokeIndexNumbers: Array<Number> = [];
+  private pokemon: Array<PokemonI> = [];
+
+  stateChanged(state: RootStoreI) {
+    this.pokemon = state.dataReducer.pokemon;
+  }
 
   async connectedCallback() {
     super.connectedCallback();
-    const getFiveRandomNumber = (min: number, max: number) => {
-      // min and max included
-      return new Array(5)
-        .fill(0)
-        .map(() => Math.floor(Math.random() * (max - min + 1) + min));
-    };
-
-    this.pokeIndexNumbers = getFiveRandomNumber(1, 100);
-    console.log(this.pokeIndexNumbers);
+    Store.dispatch(fetchPokemon());
   }
+
   render() {
     return html`
       <style>
@@ -27,9 +27,11 @@ export class PokeAuctionElem extends LitElement {
       </style>
 
       <div class="poke--auction">
-        ${this.pokeIndexNumbers.map(
-          (index) =>
-            html` <poke-card-elem pokeIndexNumber=${index}></poke-card-elem>`
+        ${this.pokemon.map(
+          (item) =>
+            html`<poke-card-elem
+              pokemon=${JSON.stringify(item)}
+            ></poke-card-elem>`
         )}
       </div>
     `;

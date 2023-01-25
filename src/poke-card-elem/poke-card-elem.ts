@@ -1,4 +1,5 @@
 import { LitElement, html, customElement, property, state } from "lit-element";
+import { PokemonI } from "../slices/data-slice";
 import Axios from "axios";
 
 interface PokeStateI {
@@ -12,24 +13,31 @@ export class PokeCardElem extends LitElement {
   private imageLink: string = "";
   @state()
   private pokeStats: Array<PokeStateI> = [];
-  @property({ type: Number }) pokeIndexNumber: number = 0;
+  @property({ type: Object }) pokemon: PokemonI = {
+    pokemonIndex: 0,
+    pokemonId: "",
+    currentHigh: 0,
+    bids: [],
+  };
 
   async load() {
     try {
       const response = await Axios.get(
-        `https://pokeapi.co/api/v2/pokemon/${this.pokeIndexNumber}`
+        `https://pokeapi.co/api/v2/pokemon/${this.pokemon.pokemonIndex}`
       );
+
       const { name, stats, id } = response.data;
 
       const nextPokeStats = [
         { key: "name", value: name },
         { key: "id", value: id },
       ];
+
       stats.forEach((state: any) => {
         nextPokeStats.push({ key: state.stat.name, value: state.base_stat });
       });
 
-      this.imageLink = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${this.pokeIndexNumber}.png`;
+      this.imageLink = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${this.pokemon.pokemonIndex}.png`;
       this.pokeStats = nextPokeStats;
     } catch (e) {
       console.log("error while loading");
