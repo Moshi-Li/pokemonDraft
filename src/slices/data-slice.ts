@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { state } from "lit-element";
 import { v4 as uuid } from "uuid";
 
-interface PokemonBidI {
+export interface PokemonBidI {
   price: number;
   userId: string;
   pokemonId: string;
