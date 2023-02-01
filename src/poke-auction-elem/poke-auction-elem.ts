@@ -10,6 +10,7 @@ export class PokeAuctionElem extends connect(Store)(LitElement) {
 
   stateChanged(state: RootStoreI) {
     this.pokemon = state.dataReducer.pokemon;
+    super.requestUpdate();
   }
 
   async connectedCallback() {
@@ -23,6 +24,8 @@ export class PokeAuctionElem extends connect(Store)(LitElement) {
         .poke--auction {
           display: flex;
           flex-direction: row;
+          padding: 16px;
+          background-color: red;
         }
       </style>
 

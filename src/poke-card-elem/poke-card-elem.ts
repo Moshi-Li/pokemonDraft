@@ -11,8 +11,6 @@ interface PokeStateI {
 @customElement("poke-card-elem")
 export class PokeCardElem extends LitElement {
   @state()
-  private imageLink: string = "0";
-  @state()
   private pokeStats: Array<PokeStateI> = [];
 
   @state()
@@ -42,7 +40,6 @@ export class PokeCardElem extends LitElement {
         nextPokeStats.push({ key: state.stat.name, value: state.base_stat });
       });
 
-      this.imageLink = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${this.pokemon.pokemonIndex}.png`;
       this.pokeStats = nextPokeStats;
     } catch (e) {
       console.log("error while loading");
@@ -67,6 +64,8 @@ export class PokeCardElem extends LitElement {
         pokemonIndex: this.pokemon.pokemonIndex,
       })
     );
+
+    this.bidInputValue = "";
   }
 
   private updateBidInputValue(e: InputEvent) {
@@ -77,6 +76,9 @@ export class PokeCardElem extends LitElement {
   render() {
     return html`
       <style>
+        .pokemon--element {
+          margin: 6px;
+        }
         .pokemon--card {
           background-color: transparent;
           width: 250px;
@@ -126,7 +128,10 @@ export class PokeCardElem extends LitElement {
 
       <div class="pokemon--element">
         <div class="pokemon--card">
-          <img src="${this.imageLink}" />
+          <img
+            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${this
+              .pokemon.pokemonIndex}.png"
+          />
 
           <div class="pokemon--info--container">
             ${this.pokeStats.map(
@@ -139,7 +144,7 @@ export class PokeCardElem extends LitElement {
         <div class="pokemon--bid--section">
           <p>current price: ${this.pokemon.currentHigh}</p>
           <input
-            value="${this.bidInputValue}"
+            .value="${this.bidInputValue}"
             @change="${this.updateBidInputValue}"
           />
 

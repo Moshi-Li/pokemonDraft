@@ -19,17 +19,21 @@ export interface PokemonI {
 export interface DataI {
   pokemon: Array<PokemonI>;
   topPokemonBids: Array<PokemonBidI>;
+  auctionEndTime: number;
 }
 
 const dataDefaultState: DataI = {
   pokemon: [],
   topPokemonBids: [],
+  auctionEndTime: 0,
 };
 
 const getRandomNumber = (min: number, max: number) => {
   // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
+
+const AUCTION_TIME = 10 * 1000 - 1;
 
 export const dataSlice = createSlice({
   name: "dataSlice",
@@ -45,10 +49,10 @@ export const dataSlice = createSlice({
         };
       });
       state.pokemon = nextPokemon;
+      state.auctionEndTime = new Date().getTime() + AUCTION_TIME;
     },
+
     bidPokemon: (state: DataI, action: PayloadAction<PokemonBidI>) => {
-      console.log("==== Bid ===");
-      console.log(action.payload);
       const { pokemonId, price } = action.payload;
 
       state.pokemon.forEach((item) => {
@@ -60,8 +64,29 @@ export const dataSlice = createSlice({
         }
       });
     },
+
+    renewAuction: (state: DataI, action: PayloadAction<void>) => {
+      const nextPokemon = state.pokemon
+        .filter((item) => {
+          return item.bids.length === 0;
+        })
+        .map((item) => {
+          return { ...item };
+        });
+
+      while (nextPokemon.length < 5)
+        nextPokemon.push({
+          pokemonIndex: getRandomNumber(1, 100),
+          pokemonId: uuid(),
+          currentHigh: 0,
+          bids: [],
+        });
+
+      state.pokemon = nextPokemon;
+      state.auctionEndTime = new Date().getTime() + AUCTION_TIME;
+    },
   },
 });
 
-export const { fetchPokemon, bidPokemon } = dataSlice.actions;
+export const { fetchPokemon, bidPokemon, renewAuction } = dataSlice.actions;
 export default dataSlice.reducer;
