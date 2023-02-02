@@ -1084,6 +1084,7 @@ path {
         height: 100vh;
         align-items: center;
         flex-direction: column;
+        font-family: "Gloria Hallelujah", cursive;
       }
     </style>`;return"ready"===this.draftState?r.html`
           ${e}
@@ -1252,7 +1253,8 @@ path {
 
             <wired-card class="pokemon--info--container">
               ${this.pokeStats.map(e=>r.html`<div class="pokemon--info--stat">
-                  <span>${e.key}: </span><span>${e.value}</span>
+                  <span>${e.key}:&nbsp; &nbsp;</span
+                  ><span>${e.value}</span>
                 </div>`)}</wired-card
             >
           </div></wired-card
