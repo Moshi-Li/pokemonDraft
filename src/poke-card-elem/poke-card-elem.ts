@@ -127,7 +127,8 @@ export class PokeCardElem extends LitElement {
             <wired-card class="pokemon--info--container">
               ${this.pokeStats.map(
                 (state: PokeStateI) => html`<div class="pokemon--info--stat">
-                  <span>${state.key}: </span><span>${state.value}</span>
+                  <span>${state.key}:&nbsp; &nbsp;</span
+                  ><span>${state.value}</span>
                 </div>`
               )}</wired-card
             >

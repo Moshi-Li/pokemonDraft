@@ -24,6 +24,7 @@ export class AppX extends connect(Store)(LitElement) {
         height: 100vh;
         align-items: center;
         flex-direction: column;
+        font-family: "Gloria Hallelujah", cursive;
       }
     </style>`;
 
