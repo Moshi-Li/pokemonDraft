@@ -1,46 +1,35 @@
 import { LitElement, html, customElement, property, state } from "lit-element";
 import { connect } from "pwa-helpers/connect-mixin.js";
-import {
-  renewPokemonPool,
-  draftPokemon,
-  setPendingDraft,
-  PokemonI,
-} from "../slices/data-slice";
-import { nextDraft } from "../slices/setting-slice";
-import Store, { RootStoreI } from "../store";
+
+import { resetDataReducer, PokemonI } from "../slices/data-slice";
+import { resetDraft } from "../slices/setting-slice";
+
 import { CardClickEvent } from "../poke-card-elem/poke-card-elem";
 
-@customElement("poke-auction-elem")
-export class PokeAuctionElem extends connect(Store)(LitElement) {
+import Store, { RootStoreI } from "../store";
+
+@customElement("draft-result-elem")
+export class DraftResultElem extends connect(Store)(LitElement) {
   @state()
-  private pokemonPool: Array<PokemonI> = [];
+  private draftedPokemon: Array<PokemonI> = [];
 
   @state()
   private selectedPokemonIndex: number = -2;
 
   stateChanged(state: RootStoreI) {
-    this.pokemonPool = state.dataReducer.pokemonPool;
-    this.hidden = state.settingReducer.draftState !== "drafting";
-    super.requestUpdate();
-  }
-
-  async connectedCallback() {
-    super.connectedCallback();
-    Store.dispatch(renewPokemonPool());
+    this.draftedPokemon = state.dataReducer.draftedPokemon;
+    this.hidden = state.settingReducer.draftState !== "finished";
   }
 
   cardClick(e: CustomEvent<CardClickEvent>) {
     this.selectedPokemonIndex = e.detail.index;
-    Store.dispatch(
-      setPendingDraft(this.pokemonPool[this.selectedPokemonIndex])
-    );
+
     this.requestUpdate();
   }
 
   btnClick(e: PointerEvent) {
-    Store.dispatch(draftPokemon());
-    Store.dispatch(nextDraft());
-    this.selectedPokemonIndex = -2;
+    Store.dispatch(resetDataReducer());
+    Store.dispatch(resetDraft());
   }
 
   render() {
@@ -54,7 +43,7 @@ export class PokeAuctionElem extends connect(Store)(LitElement) {
       </style>
 
       <div class="poke--auction">
-        ${this.pokemonPool.map((item, index) => {
+        ${this.draftedPokemon.map((item, index) => {
           return html`<poke-card-elem
             ?cardSelected=${this.selectedPokemonIndex === index}
             @card-clicked=${this.cardClick}
@@ -63,7 +52,7 @@ export class PokeAuctionElem extends connect(Store)(LitElement) {
           ></poke-card-elem>`;
         })}
       </div>
-      <wired-button @click="${this.btnClick}">Draft</wired-button>
+      <wired-button @click="${this.btnClick}">Back to Menu</wired-button>
     `;
   }
 }

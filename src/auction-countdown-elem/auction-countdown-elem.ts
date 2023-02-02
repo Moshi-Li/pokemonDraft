@@ -1,12 +1,14 @@
 import { LitElement, html, customElement, property, state } from "lit-element";
 import { connect } from "pwa-helpers/connect-mixin.js";
-import { renewAuction } from "../slices/data-slice";
+
+import { draftPokemon } from "../slices/data-slice";
+import { nextDraft } from "../slices/setting-slice";
 import Store, { RootStoreI } from "../store";
 
 @customElement("auction-countdown-elem")
 export class AuctionCountdownElem extends connect(Store)(LitElement) {
   @state()
-  private auctionEndTime: number = 0;
+  private draftEndTime: number = 0;
 
   @state()
   private currentTime: number = new Date().getTime();
@@ -15,16 +17,18 @@ export class AuctionCountdownElem extends connect(Store)(LitElement) {
   private intervalPointer: ReturnType<typeof setInterval> | null = null;
 
   stateChanged(state: RootStoreI) {
-    this.auctionEndTime = state.dataReducer.auctionEndTime;
+    this.draftEndTime = state.dataReducer.draftEndTime;
     this.currentTime = new Date().getTime();
+    this.hidden = state.settingReducer.draftState !== "drafting";
   }
 
   async connectedCallback() {
     super.connectedCallback();
     if (this.intervalPointer === null) {
       this.intervalPointer = setInterval(() => {
-        if (this.auctionEndTime <= this.currentTime) {
-          Store.dispatch(renewAuction());
+        if (this.draftEndTime <= this.currentTime && !this.hidden) {
+          Store.dispatch(draftPokemon());
+          Store.dispatch(nextDraft());
         } else {
           this.currentTime = new Date().getTime();
         }
@@ -51,8 +55,8 @@ export class AuctionCountdownElem extends connect(Store)(LitElement) {
 
       <div class="countdown--container">
         <h1>
-          ${this.auctionEndTime && this.auctionEndTime - this.currentTime > 0
-            ? ((this.auctionEndTime - this.currentTime) / 1000).toFixed(1)
+          ${this.draftEndTime && this.draftEndTime - this.currentTime > 0
+            ? ((this.draftEndTime - this.currentTime) / 1000).toFixed(1)
             : "0.00"}
         </h1>
       </div>

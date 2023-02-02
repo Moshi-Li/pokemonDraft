@@ -37,6 +37,7 @@
     "lit-element": "^2.5.1",
     "lit-modal": "^1.2.38",
     "pwa-helpers": "^0.9.1",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "wired-elements": "^3.0.0-rc.6"
   }
 }

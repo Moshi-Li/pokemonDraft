@@ -1,6 +1,6 @@
 import { LitElement, html, customElement, property, state } from "lit-element";
 import Store, { RootStoreI } from "../store";
-import { PokemonI, bidPokemon } from "../slices/data-slice";
+import { PokemonI } from "../slices/data-slice";
 import Axios from "axios";
 
 interface PokeStateI {
@@ -8,19 +8,22 @@ interface PokeStateI {
   value: any;
 }
 
+export interface CardClickEvent {
+  index: number;
+}
+
 @customElement("poke-card-elem")
 export class PokeCardElem extends LitElement {
   @state()
   private pokeStats: Array<PokeStateI> = [];
 
-  @state()
-  private bidInputValue: string = "";
+  @property({ type: Number }) pokemonIndex: number = -1;
+
+  @property({ type: Boolean }) cardSelected: boolean = false;
 
   @property({ type: Object }) pokemon: PokemonI = {
     pokemonIndex: 0,
     pokemonId: "",
-    currentHigh: 0,
-    bids: [],
   };
 
   async load() {
@@ -51,26 +54,15 @@ export class PokeCardElem extends LitElement {
     await this.load();
   }
 
-  private bidClick() {
-    const bidPrice = parseInt(this.bidInputValue);
-    if (typeof bidPrice !== "number" || bidPrice <= this.pokemon.currentHigh)
-      return;
-
-    Store.dispatch(
-      bidPokemon({
-        price: bidPrice,
-        userId: "Unknown",
-        pokemonId: this.pokemon.pokemonId,
-        pokemonIndex: this.pokemon.pokemonIndex,
+  cardClick() {
+    this.dispatchEvent(
+      new CustomEvent<CardClickEvent>("card-clicked", {
+        bubbles: true,
+        detail: {
+          index: this.pokemonIndex,
+        },
       })
     );
-
-    this.bidInputValue = "";
-  }
-
-  private updateBidInputValue(e: InputEvent) {
-    const input = e.target as HTMLInputElement;
-    this.bidInputValue = input.value;
   }
 
   render() {
@@ -78,13 +70,21 @@ export class PokeCardElem extends LitElement {
       <style>
         .pokemon--element {
           margin: 6px;
+          cursor: pointer;
         }
+
         .pokemon--card {
           background-color: transparent;
           width: 250px;
           padding: 20px;
           border: 1px solid black;
         }
+
+        .pokemon--card.selected {
+          border: 1px solid red;
+          transform: translateY(-10px);
+        }
+
         .pokemon--card img {
           width: 80%;
           background-color: white;
@@ -105,29 +105,10 @@ export class PokeCardElem extends LitElement {
           width: 70%;
           margin: 4px;
         }
-
-        .pokemon--bid--section {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          flex-direction: column;
-        }
-
-        .pokemon--bid--section button {
-          cursor: pointer;
-        }
-
-        .pokemon--bid--section p {
-          margin: 6px 0;
-        }
-        .pokemon--bid--section input {
-          width: 100px;
-          margin: 6px 0;
-        }
       </style>
 
-      <div class="pokemon--element">
-        <div class="pokemon--card">
+      <div class="pokemon--element" @click="${this.cardClick}">
+        <div class="pokemon--card ${this.cardSelected ? "selected" : ""}">
           <img
             src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${this
               .pokemon.pokemonIndex}.png"
@@ -140,15 +121,6 @@ export class PokeCardElem extends LitElement {
               </div>`
             )}
           </div>
-        </div>
-        <div class="pokemon--bid--section">
-          <p>current price: ${this.pokemon.currentHigh}</p>
-          <input
-            .value="${this.bidInputValue}"
-            @change="${this.updateBidInputValue}"
-          />
-
-          <button class="pokemon" @click="${this.bidClick}">Bid</button>
         </div>
       </div>
     `;

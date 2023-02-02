@@ -2,30 +2,23 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { state } from "lit-element";
 import { v4 as uuid } from "uuid";
 
-export interface PokemonBidI {
-  price: number;
-  userId: string;
-  pokemonId: string;
-  pokemonIndex: number;
-}
-
 export interface PokemonI {
   pokemonIndex: number;
   pokemonId: string;
-  currentHigh: number;
-  bids: Array<PokemonBidI>;
 }
 
 export interface DataI {
-  pokemon: Array<PokemonI>;
-  topPokemonBids: Array<PokemonBidI>;
-  auctionEndTime: number;
+  pokemonPool: Array<PokemonI>;
+  draftedPokemon: Array<PokemonI>;
+  draftEndTime: number;
+  pendingDraft: PokemonI | null;
 }
 
 const dataDefaultState: DataI = {
-  pokemon: [],
-  topPokemonBids: [],
-  auctionEndTime: 0,
+  pokemonPool: [],
+  draftedPokemon: [],
+  draftEndTime: 0,
+  pendingDraft: null,
 };
 
 const getRandomNumber = (min: number, max: number) => {
@@ -33,14 +26,14 @@ const getRandomNumber = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
-const AUCTION_TIME = 10 * 1000 - 1;
+const DRAFT_TIME = 10 * 1000 - 1;
 
 export const dataSlice = createSlice({
   name: "dataSlice",
   initialState: dataDefaultState,
   reducers: {
-    fetchPokemon: (state: DataI, action: PayloadAction<void>) => {
-      const nextPokemon: Array<PokemonI> = new Array(5).fill(0).map(() => {
+    renewPokemonPool: (state: DataI, action: PayloadAction<void>) => {
+      const nextPokemonPool: Array<PokemonI> = new Array(5).fill(0).map(() => {
         return {
           pokemonIndex: getRandomNumber(1, 100),
           pokemonId: uuid(),
@@ -48,45 +41,48 @@ export const dataSlice = createSlice({
           bids: [],
         };
       });
-      state.pokemon = nextPokemon;
-      state.auctionEndTime = new Date().getTime() + AUCTION_TIME;
+      state.pokemonPool = nextPokemonPool;
+      state.draftEndTime = new Date().getTime() + DRAFT_TIME;
     },
 
-    bidPokemon: (state: DataI, action: PayloadAction<PokemonBidI>) => {
-      const { pokemonId, price } = action.payload;
+    draftPokemon: (state: DataI, action: PayloadAction<void>) => {
+      if (state.pendingDraft === null) {
+        state.draftedPokemon.push(state.pokemonPool[0]);
+      } else {
+        state.draftedPokemon.push(state.pendingDraft);
+      }
 
-      state.pokemon.forEach((item) => {
-        if (item.pokemonId === pokemonId && item.currentHigh < price) {
-          item.bids.unshift(action.payload);
-          item.currentHigh = price;
-          state.topPokemonBids.push({ ...action.payload });
-          state.topPokemonBids.sort((a, b) => a.price - b.price);
-        }
-      });
-    },
-
-    renewAuction: (state: DataI, action: PayloadAction<void>) => {
-      const nextPokemon = state.pokemon
-        .filter((item) => {
-          return item.bids.length === 0;
-        })
-        .map((item) => {
-          return { ...item };
-        });
-
-      while (nextPokemon.length < 5)
-        nextPokemon.push({
+      const nextPokemonPool: Array<PokemonI> = new Array(5).fill(0).map(() => {
+        return {
           pokemonIndex: getRandomNumber(1, 100),
           pokemonId: uuid(),
           currentHigh: 0,
           bids: [],
-        });
+        };
+      });
 
-      state.pokemon = nextPokemon;
-      state.auctionEndTime = new Date().getTime() + AUCTION_TIME;
+      state.pokemonPool = nextPokemonPool;
+      state.draftEndTime = new Date().getTime() + DRAFT_TIME;
+    },
+
+    setPendingDraft: (state: DataI, action: PayloadAction<PokemonI>) => {
+      state.pendingDraft = { ...action.payload };
+    },
+
+    resetDataReducer: (state: DataI, action: PayloadAction<void>) => {
+      console.log("resetDataReducer");
+      state.pokemonPool = [];
+      state.draftedPokemon = [];
+      state.draftEndTime = 0;
+      state.pendingDraft = null;
     },
   },
 });
 
-export const { fetchPokemon, bidPokemon, renewAuction } = dataSlice.actions;
+export const {
+  renewPokemonPool,
+  draftPokemon,
+  setPendingDraft,
+  resetDataReducer,
+} = dataSlice.actions;
 export default dataSlice.reducer;
