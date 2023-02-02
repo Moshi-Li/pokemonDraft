@@ -35,24 +35,34 @@ export class DraftResultElem extends connect(Store)(LitElement) {
   render() {
     return html`
       <style>
-        .poke--auction {
+        .result--container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .poke--draft {
           display: flex;
           flex-direction: row;
           padding: 16px;
         }
       </style>
 
-      <div class="poke--auction">
-        ${this.draftedPokemon.map((item, index) => {
-          return html`<poke-card-elem
-            ?cardSelected=${this.selectedPokemonIndex === index}
-            @card-clicked=${this.cardClick}
-            pokemonIndex=${index}
-            pokemon=${JSON.stringify(item)}
-          ></poke-card-elem>`;
-        })}
+      <div class="result--container">
+        <wire-card><h2>Draft Result</h2></wire-card>
+        <div class="poke--draft">
+          ${this.draftedPokemon.map((item, index) => {
+            return html`<poke-card-elem
+              ?cardSelected=${this.selectedPokemonIndex === index}
+              @card-clicked=${this.cardClick}
+              pokemonIndex=${index}
+              pokemon=${JSON.stringify(item)}
+            ></poke-card-elem>`;
+          })}
+        </div>
+
+        <wired-button @click="${this.btnClick}">Back to Menu</wired-button>
       </div>
-      <wired-button @click="${this.btnClick}">Back to Menu</wired-button>
     `;
   }
 }

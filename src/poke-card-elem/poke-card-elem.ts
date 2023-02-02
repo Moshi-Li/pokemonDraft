@@ -73,16 +73,15 @@ export class PokeCardElem extends LitElement {
           cursor: pointer;
         }
 
+        .pokemon--element--selected {
+          transform: translateY(-10px);
+        }
+
         .pokemon--card {
           background-color: transparent;
           width: 250px;
           padding: 20px;
           border: 1px solid black;
-        }
-
-        .pokemon--card.selected {
-          border: 1px solid red;
-          transform: translateY(-10px);
         }
 
         .pokemon--card img {
@@ -98,30 +97,42 @@ export class PokeCardElem extends LitElement {
 
           display: flex;
           flex-direction: column;
-
-          justify-content: space-between;
         }
+
         .pokemon--info--stat {
-          width: 70%;
-          margin: 4px;
+          display: flex;
+          flex-direction: row;
+          padding: 6px;
+        }
+
+        .pokemon--info--img {
+          display: flex;
+          align-items: center;
+          flex-direction: column;
         }
       </style>
 
       <div class="pokemon--element" @click="${this.cardClick}">
-        <div class="pokemon--card ${this.cardSelected ? "selected" : ""}">
-          <img
-            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${this
-              .pokemon.pokemonIndex}.png"
-          />
+        <wired-card
+          elevation="${this.cardSelected ? "10" : "1"}"
+          class="${this.cardSelected ? "pokemon--element--selected" : ""}"
+        >
+          <div class="pokemon--card">
+            <wired-image
+              src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${this
+                .pokemon.pokemonIndex}.png"
+              class="pokemon--info--img"
+            ></wired-image>
 
-          <div class="pokemon--info--container">
-            ${this.pokeStats.map(
-              (state: PokeStateI) => html`<div class="pokemon--info--stat">
-                <span>${state.key}: </span><span>${state.value}</span>
-              </div>`
-            )}
-          </div>
-        </div>
+            <wired-card class="pokemon--info--container">
+              ${this.pokeStats.map(
+                (state: PokeStateI) => html`<div class="pokemon--info--stat">
+                  <span>${state.key}: </span><span>${state.value}</span>
+                </div>`
+              )}</wired-card
+            >
+          </div></wired-card
+        >
       </div>
     `;
   }

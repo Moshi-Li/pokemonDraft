@@ -52,35 +52,60 @@ export class LandingElem extends connect(Store)(LitElement) {
     return html`
       <style>
         .landing--container {
-          width: 400px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        .landing--header {
+          flex-grow: 100%;
+        }
+
+        .landing--form {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          padding: 20px;
         }
       </style>
 
-      <div class="landing">
-        <wired-card class="landing--container">
-          <h1>Landing</h1>
-          <wired-card>
-            <wired-input
-              type="number"
-              value="${this.pokeIndexLow}"
-              @change="${this.inputPokeIndexLowOnChange}"
-            ></wired-input>
-            <wired-input
-              type="number"
-              value="${this.pokeIndexHigh}"
-              @change="${this.inputPokeIndexHighOnChange}"
-            ></wired-input>
-            <wired-input
-              type="number"
-              value="${this.draftCount}"
-              @change="${this.inputDraftCountOnChange}"
-            ></wired-input>
-          </wired-card>
-          <wired-button @click="${this.btnClick}"
-            >Start</wired-button
-          ></wired-card
-        >
-      </div>
+      <wired-card>
+        <div class="landing--container">
+          <h1>Pokemon Draft</h1>
+
+          <wire-card>
+            <div class="landing--form">
+              <div class="landing--row">
+                <span>Pokemon Index Left Bound (1-150) : </span>
+                <wired-input
+                  type="number"
+                  value="${this.pokeIndexLow}"
+                  @change="${this.inputPokeIndexLowOnChange}"
+                ></wired-input>
+              </div>
+
+              <div class="landing--row">
+                <span>Pokemon Index Right Bound (1-150) : </span>
+                <wired-input
+                  type="number"
+                  value="${this.pokeIndexHigh}"
+                  @change="${this.inputPokeIndexHighOnChange}"
+                ></wired-input>
+              </div>
+
+              <div class="landing--row">
+                <span># of Pokemon to be Drafted : </span>
+                <wired-input
+                  type="number"
+                  value="${this.draftCount}"
+                  @change="${this.inputDraftCountOnChange}"
+                >
+                </wired-input>
+              </div></div
+          ></wire-card>
+
+          <wired-button @click="${this.btnClick}">Start</wired-button>
+        </div>
+      </wired-card>
     `;
   }
 }

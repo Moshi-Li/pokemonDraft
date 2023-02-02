@@ -52,6 +52,8 @@ export const dataSlice = createSlice({
         state.draftedPokemon.push(state.pendingDraft);
       }
 
+      state.pendingDraft = null;
+
       const nextPokemonPool: Array<PokemonI> = new Array(5).fill(0).map(() => {
         return {
           pokemonIndex: getRandomNumber(1, 100),

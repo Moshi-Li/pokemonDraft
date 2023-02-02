@@ -3,18 +3,12 @@
 }
 
 body {
-    font-family: Arial;
     padding: 10px;
     background: #f1f1f1;
+    margin: 0;
+    font-family: 'Gloria Hallelujah', sans-serif;
 }
 
-.container{
-    display: flex;
-    justify-content: center;
-    height: 100vh;
-    align-items: center;
-    flex-direction: column;
-}
 
 
 /* Create two unequal columns that floats next to each other */

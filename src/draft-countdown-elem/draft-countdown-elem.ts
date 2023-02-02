@@ -5,8 +5,8 @@ import { draftPokemon } from "../slices/data-slice";
 import { nextDraft } from "../slices/setting-slice";
 import Store, { RootStoreI } from "../store";
 
-@customElement("auction-countdown-elem")
-export class AuctionCountdownElem extends connect(Store)(LitElement) {
+@customElement("draft-countdown-elem")
+export class DraftCountdownElem extends connect(Store)(LitElement) {
   @state()
   private draftEndTime: number = 0;
 
@@ -44,15 +44,6 @@ export class AuctionCountdownElem extends connect(Store)(LitElement) {
 
   render() {
     return html`
-      <style>
-        .poke--auction {
-          display: flex;
-          flex-direction: row;
-          padding: 16px;
-          background-color: red;
-        }
-      </style>
-
       <div class="countdown--container">
         <h1>
           ${this.draftEndTime && this.draftEndTime - this.currentTime > 0

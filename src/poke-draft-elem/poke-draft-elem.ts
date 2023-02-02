@@ -10,8 +10,8 @@ import { nextDraft } from "../slices/setting-slice";
 import Store, { RootStoreI } from "../store";
 import { CardClickEvent } from "../poke-card-elem/poke-card-elem";
 
-@customElement("poke-auction-elem")
-export class PokeAuctionElem extends connect(Store)(LitElement) {
+@customElement("poke-draft-elem")
+export class PokeDraftElem extends connect(Store)(LitElement) {
   @state()
   private pokemonPool: Array<PokemonI> = [];
 
@@ -46,24 +46,30 @@ export class PokeAuctionElem extends connect(Store)(LitElement) {
   render() {
     return html`
       <style>
-        .poke--auction {
+        .poke--draft {
           display: flex;
           flex-direction: row;
           padding: 16px;
         }
+        .draft--container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
       </style>
-
-      <div class="poke--auction">
-        ${this.pokemonPool.map((item, index) => {
-          return html`<poke-card-elem
-            ?cardSelected=${this.selectedPokemonIndex === index}
-            @card-clicked=${this.cardClick}
-            pokemonIndex=${index}
-            pokemon=${JSON.stringify(item)}
-          ></poke-card-elem>`;
-        })}
+      <div class="draft--container">
+        <div class="poke--draft">
+          ${this.pokemonPool.map((item, index) => {
+            return html`<poke-card-elem
+              ?cardSelected=${this.selectedPokemonIndex === index}
+              @card-clicked=${this.cardClick}
+              pokemonIndex=${index}
+              pokemon=${JSON.stringify(item)}
+            ></poke-card-elem>`;
+          })}
+        </div>
+        <wired-button @click="${this.btnClick}">Draft</wired-button>
       </div>
-      <wired-button @click="${this.btnClick}">Draft</wired-button>
     `;
   }
 }
