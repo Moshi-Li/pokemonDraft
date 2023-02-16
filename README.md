@@ -1,27 +1,25 @@
-## Poke Auction
-
-### _Bid your favorite Pokemon_
-
-One pokemon blackhole is discovered and pokemons are continously poping out of this blackhole, entrering our universe. The owner of the pokemon decide to make a website and sell pokemons that popped out of the blackhole.
+## Pokemon Draft
+### _Draft your favorite Pokemon_
+Having issues selecting your pokemon team? Come to Pokemon Draft and draft your pokemon team!
 
 ## Features
-
-- A new pokemon would be listed every 5 minutes
-- Onece a new pokemon is listed, the auction for this pokemon should start and continue for 25 minutes
-- The user should be able to browse all the pokemons that are listed for auction along with thier lastest bids.
-- The user should be able to input his or her shipping info when placing bids.
+- Allow users to draft N number of pokemon from a pool of pokemons
+- For each draft, N number of draft rounds could be set.
+- During each draft round, users are expected to select one pokemon from the draft round.
+- There should be a count down during each draft round.
+- If use has not selected a pokemon at the end of the draft round, the first pokemon should be selected.
 
 ## Todos
-
 - [x] Find resources needed for the project
-  - [x] Find a template that integrates Web-Components, Typescripts, SCSS and Webpack.[Create-Component-UI](https://github.com/RameezAijaz/create-component-ui#readme)
-  - [x] Find public APIs that offers Pokemon information.[PokeAPI](https://pokeapi.co/)
-- [ ] Web Development
-  - [ ] Pokemon Card that contains pokemon information
-  - [ ] Recently Auction List
-  - [ ] User information form
-  - [ ] Bid Button
-- [ ] Connect the website with public API
-- [ ] Local or Cloud server needed for caching.
-  - [ ] User session generation
-- [ ] Connect the website with sever
+    - [x] Find a template that integrates Web-Components, Typescripts, SCSS and Webpack.[Create-Component-UI](https://github.com/RameezAijaz/create-component-ui#readme) 
+    - [x] Find public APIs that offers Pokemon information[PokeAPI](https://pokeapi.co/) 
+- [X] Web Development
+    - [X] Landing page with config options
+    - [X] Pokemon information card
+    - [X] Draft Round Mechanism
+    - [X] Count Down Timer
+    - [X] End of draft pokemon list.
+    - [X] Volume Control
+- [] Pipeline
+    - [X] Webpack config
+    - [X] Pipeline for github pages
