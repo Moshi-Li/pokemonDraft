@@ -1,4 +1,5 @@
 import { LitElement, html, customElement, property, state } from "lit-element";
+import { connect } from "pwa-helpers/connect-mixin.js";
 import Store, { RootStoreI } from "../store";
 import { PokemonI } from "../slices/data-slice";
 import Axios from "axios";
@@ -13,9 +14,12 @@ export interface CardClickEvent {
 }
 
 @customElement("poke-card-elem")
-export class PokeCardElem extends LitElement {
+export class PokeCardElem extends connect(Store)(LitElement) {
   @state()
   private pokeStats: Array<PokeStateI> = [];
+
+  @state()
+  private volumeValue: number = 3;
 
   @property({ type: Number }) pokemonIndex: number = -1;
 
@@ -25,6 +29,10 @@ export class PokeCardElem extends LitElement {
     pokemonIndex: 0,
     pokemonId: "",
   };
+
+  stateChanged(state: RootStoreI) {
+    this.volumeValue = state.settingReducer.volumeValue;
+  }
 
   async load() {
     try {
@@ -63,6 +71,14 @@ export class PokeCardElem extends LitElement {
         },
       })
     );
+
+    try {
+      const audio = new Audio(`cries/${this.pokemon.pokemonIndex}.ogg`);
+      audio.volume = this.volumeValue * 0.1;
+      audio.play();
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   render() {

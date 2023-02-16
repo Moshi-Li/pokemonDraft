@@ -5,6 +5,7 @@ export interface SettingI {
   pokeIndexHigh: number;
   draftCount: number;
   draftState: "drafting" | "ready" | "finished";
+  volumeValue: number;
 }
 
 export interface SettingParamI {
@@ -18,6 +19,7 @@ const dataDefaultState: SettingI = {
   pokeIndexHigh: 100,
   draftCount: 6,
   draftState: "ready",
+  volumeValue: 5,
 };
 
 export const settingSlice = createSlice({
@@ -53,8 +55,13 @@ export const settingSlice = createSlice({
         state.draftCount = state.draftCount - 1;
       }
     },
+
+    setVolumeValue: (state: SettingI, action: PayloadAction<number>) => {
+      state.volumeValue = action.payload;
+    },
   },
 });
 
-export const { startDraft, resetDraft, nextDraft } = settingSlice.actions;
+export const { startDraft, resetDraft, nextDraft, setVolumeValue } =
+  settingSlice.actions;
 export default settingSlice.reducer;

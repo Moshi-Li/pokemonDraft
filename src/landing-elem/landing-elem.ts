@@ -4,16 +4,22 @@ import { startDraft } from "../slices/setting-slice";
 
 import Store, { RootStoreI } from "../store";
 
+const defaultValues = {
+  pokeIndexHigh: 150,
+  pokeIndexLow: 1,
+  draftCount: 6,
+};
+
 @customElement("landing-elem")
 export class LandingElem extends connect(Store)(LitElement) {
   @state()
-  private pokeIndexHigh: number = 100;
+  private pokeIndexHigh: number = 150;
 
   @state()
   private pokeIndexLow: number = 1;
 
   @state()
-  private draftCount: number = 6;
+  private draftCount: number = 5;
 
   stateChanged(state: RootStoreI) {
     this.hidden = state.settingReducer.draftState !== "ready";
@@ -24,28 +30,47 @@ export class LandingElem extends connect(Store)(LitElement) {
   }
 
   btnClick(e: PointerEvent) {
-    Store.dispatch(
-      startDraft({
-        pokeIndexLow: this.pokeIndexLow,
-        pokeIndexHigh: this.pokeIndexHigh,
-        draftCount: this.draftCount,
-      })
-    );
+    if (this.pokeIndexHigh > this.pokeIndexLow)
+      Store.dispatch(
+        startDraft({
+          pokeIndexLow: this.pokeIndexLow,
+          pokeIndexHigh: this.pokeIndexHigh,
+          draftCount: this.draftCount,
+        })
+      );
   }
 
   inputPokeIndexLowOnChange(e: InputEvent) {
     const input = e.target as HTMLInputElement;
-    this.pokeIndexLow = parseInt(input.value);
+    const inputValue = parseInt(input.value);
+
+    if (0 < inputValue && inputValue < 150)
+      this.pokeIndexLow = parseInt(input.value);
+    else {
+      input.value = `${this.pokeIndexLow}`;
+    }
   }
 
   inputPokeIndexHighOnChange(e: InputEvent) {
     const input = e.target as HTMLInputElement;
-    this.pokeIndexHigh = parseInt(input.value);
+    const inputValue = parseInt(input.value);
+
+    if (0 <= inputValue && inputValue <= 150)
+      this.pokeIndexHigh = parseInt(input.value);
+    else {
+      input.value = `${this.pokeIndexHigh}`;
+    }
   }
 
   inputDraftCountOnChange(e: InputEvent) {
     const input = e.target as HTMLInputElement;
-    this.draftCount = parseInt(input.value);
+    const inputValue = parseInt(input.value);
+
+    if (1 <= inputValue && inputValue <= 7)
+      this.draftCount = parseInt(input.value);
+    else {
+      input.value = `${this.draftCount}`;
+    }
   }
 
   render() {
